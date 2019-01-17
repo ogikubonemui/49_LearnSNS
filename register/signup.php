@@ -38,6 +38,8 @@ if (!empty($_POST)){
     //$_FILES[キー]['name']; ファイル名
     //$_FILES[キー]['tmp_name']; ファイルデータそのもの
     $file_name = $_FILES['input_img_name']['name'];
+    $file_img = $_FILES['input_img_name']['tmp_name'];
+
     if(!empty($file_name)){
     //ファイルの処理
 
@@ -83,12 +85,15 @@ if (!empty($_POST)){
         $_SESSION['49_LearnSNS']['name'] = $_POST['input_name'];
         $_SESSION['49_LearnSNS']['email'] = $_POST['input_email'];
         $_SESSION['49_LearnSNS']['password'] = $_POST['input_password'];
+        $_SESSION['49_LearnSNS']['img_name'] = $submit_file_name;
         // check.phpへの遷移（移動）
         // header('Location: 移動先')
         header('Location: check.php');
         exit();
     }
 }
+
+
 
 echo '<pre>';
 var_dump($file_type);
