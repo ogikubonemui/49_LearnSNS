@@ -3,6 +3,19 @@ session_start();
 //セッションを利用するための必須ルール
 //PHPファイルの先頭に書くこと
 
+//check.phpから戻ってきた場合の処理
+//POST送信の場合は$_POST、GET送信の場合は$_GETというスーパーグローバル変数が使える
+if (isset($_GET['action']) && $_GET['action'] =='rewrite'){
+    //$_POSTに擬似的に値を代入する
+    //バリデーションを働かせるため
+    $_POST['input_name'] = $_SESSION['49_LearnSNS']['name'];
+    $_POST['input_email'] = $_SESSION['49_LearnSNS']['email'];
+    $_POST['input_password'] = $_SESSION['49_LearnSNS']['password'];
+
+    //check.phpが空の場合、check.phpへ再遷移してもらう
+    $errors['rewrite'] = true;
+}
+
 //空チェック
 //1.エラーだった場合になんのエラーかを保持する$errorsを定義
 //2.送信されたデータと空文字を比較
@@ -37,9 +50,10 @@ if (!empty($_POST)){
     }
     //$_FILES[キー]['name']; ファイル名
     //$_FILES[キー]['tmp_name']; ファイルデータそのもの
-    $file_name = $_FILES['input_img_name']['name'];
-    $file_img = $_FILES['input_img_name']['tmp_name'];
-
+    $file_name='';
+    if(!isset($_GET['action'])){
+        $file_name = $_FILES['input_img_name']['name'];
+    }
     if(!empty($file_name)){
     //ファイルの処理
 
@@ -93,11 +107,6 @@ if (!empty($_POST)){
     }
 }
 
-
-
-echo '<pre>';
-var_dump($file_type);
-echo '</pre>';
 
 ?>
 

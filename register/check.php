@@ -1,8 +1,13 @@
 <?php
 session_start();
-echo '<pre>';
-var_dump($_SESSION);
-echo '</pre>';
+
+//49_LearnSNSのセッションが空だった場合、signup.phpに強制的に遷移（強制遷移の実装）
+if(!isset($_SESSION['49_LearnSNS'])){
+    //signup.phpへの遷移処理
+    header('Location: signup.php');
+    //exit();以降の処理は全ておこなわれない
+    exit();
+}
 
 $name = $_SESSION['49_LearnSNS']['name'];
 $email = $_SESSION['49_LearnSNS']['email'];
@@ -41,7 +46,7 @@ $img_name = $_SESSION['49_LearnSNS']['img_name'];
                             <p class="lead">●●●●●●●●</p>
                         </div>
                         <form method="POST" action="thanks.php">
-                            <a href="signup.php?action=rewrite" class="btn btn-default">&laquo;&nbsp;戻る</a> | 
+                            <a href="signup.php?action=rewrite" class="btn btn-default">&laquo;&nbsp;戻る</a> 
                             <input type="hidden" name="action" value="submit">
                             <input type="submit" class="btn btn-primary" value="ユーザー登録">
                         </form>
