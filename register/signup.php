@@ -3,6 +3,10 @@ session_start();
 //セッションを利用するための必須ルール
 //PHPファイルの先頭に書くこと
 
+//1. $errorsの定義
+$errors = [];
+//↑入れ物だけ用意している状態
+
 //check.phpから戻ってきた場合の処理
 //POST送信の場合は$_POST、GET送信の場合は$_GETというスーパーグローバル変数が使える
 if (isset($_GET['action']) && $_GET['action'] =='rewrite'){
@@ -22,9 +26,10 @@ if (isset($_GET['action']) && $_GET['action'] =='rewrite'){
 //3.一致する場合は$errorsにnameをキーにblankという値を保持
 //4.エラーがある場合、エラーメッセージを表示
 
-//1. $errorsの定義
-$errors = [];
-//↑入れ物だけ用意している状態
+//if(!empty)以降で、POST送信だった場合の状況を定義してしまっていて、エラーが出てしまうので、いったん中に空白を入れる。
+
+$name = '';
+$email = '';
 
 // POSTかどうか（単純にアクセスするのはGET送信）
 if (!empty($_POST)){
@@ -134,14 +139,14 @@ if (!empty($_POST)){
                 <form method="POST" action="signup.php" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="name">ユーザー名</label>
-                        <input type="text" name="input_name" class="form-control" id="name" placeholder="山田 太郎" value="">
+                        <input type="text" name="input_name" class="form-control" id="name" placeholder="山田 太郎" value="<?php echo htmlspecialchars($name); ?>">
                         <?php if(isset($errors['name']) && $errors['name'] == 'blank'): ?>
                             <p class="text-danger">ユーザー名を入力してください</p>
                         <?php endif; ?>
                     </div>
                     <div class="form-group">
                         <label for="email">メールアドレス</label>
-                        <input type="email" name="input_email" class="form-control" id="email" placeholder="example@gmail.com" value="">
+                        <input type="email" name="input_email" class="form-control" id="email" placeholder="example@gmail.com" value="<?php echo htmlspecialchars($email); ?>">
                         <?php if(isset($errors['email']) && $errors['email'] == 'blank'): ?>
                             <p class="text-danger">メールアドレスを入力してください</p>
                         <?php endif; ?>
@@ -154,6 +159,9 @@ if (!empty($_POST)){
                         <?php endif; ?>
                         <?php if(isset($errors['password']) && $errors['password'] == 'length'): ?>
                             <p class="text-danger">パスワードは4 ~ 16文字で入力してください</p>
+                        <?php endif; ?>
+                        <?php if(!empty($errors) && isset($errors['rewrite'])): ?>
+                            <p class = "text-danger">パスワードを再度入力してください</p>
                         <?php endif; ?>
                     </div>
                     <div class="form-group">
