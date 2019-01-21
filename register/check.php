@@ -2,8 +2,8 @@
 session_start();
 //require（ファイル名）;
 //指定されたファイルの中身が丸々移植される
+//DBとつなげるときに使う関数require
 require('../dbconnect.php');
-
 //49_LearnSNSのセッションが空だった場合、signup.phpに強制的に遷移（強制遷移の実装）
 if(!isset($_SESSION['49_LearnSNS'])){
     //signup.phpへの遷移処理
