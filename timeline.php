@@ -1,6 +1,46 @@
 <?php
+//セッションを使い始めるとき
+session_start();
+
+//DBを使い始めるとき
+require('dbconnect.php');
+
+$sql = 'SELECT * FROM `users` WHERE `id` = ?';
+$data = [$_SESSION['49_LearnSNS']['id']];
+
+//dbh（データベースハンドル）にsqlを準備してもらう
+$stmt = $dbh->prepare($sql);
+$stmt->execute($data);
+
+// ->アロー演算子
+// インスタンスのメンバメソッドを呼び出す
+$signin_user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+echo '<pre>';
+var_dump($signin_user);
+echo '</pre>';
 
 ?>
+<!--
+    inlude（ファイル名）;
+    指定されたファイルが指定された箇所に読み込まれる
+    Webサービス内で共通するような場所は他のファイルで定義をして、
+    さまざまなページから利用可能にするべき
+
+    requireとincludeの違い
+    記述にミスがある場合
+    requireはエラー
+    includeは警告
+
+    プログラムに記述のミスがある場合にそれが致命的なミスになる場合は
+    requreを使用（例えばDBを使えない場合は致命的だから）
+    includeを使用（例えばヘッダーのデザインだとかサービス自体にはダメージを与えない）
+
+    includeされたファイル内では呼び出し元の変数が利用できる
+
+    $signin['user']
+-->
+
 <?php include('layouts/header.php'); ?>
 <body style="margin-top: 60px; background: #E4E6EB;">
     <?php include('navbar.php'); ?>
