@@ -13,7 +13,6 @@ if(!empty($_POST)){
         //正常系
         //両方入力されているとき
         //データベースとの照合処理
-
         //1.入力されたメールアドレスと一致する登録データを1件DBから取得する
         $sql = 'SELECT * FROM `users` WHERE `email` = ?';
         $data = [$email];
