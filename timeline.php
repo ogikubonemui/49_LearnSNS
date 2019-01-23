@@ -5,6 +5,13 @@ session_start();
 //DBを使い始めるとき
 require('dbconnect.php');
 
+//サインインをしていなければ
+if(!isset($_SESSION['49_LearnSNS']['id'])){
+    //signin.phpへの遷移処理
+    header('Location: signin.php');
+    exit();
+}
+
 $sql = 'SELECT * FROM `users` WHERE `id` = ?';
 $data = [$_SESSION['49_LearnSNS']['id']];
 
