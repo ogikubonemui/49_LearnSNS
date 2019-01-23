@@ -5,6 +5,14 @@ session_start();
 //DBを使い始めるとき
 require('dbconnect.php');
 
+//サインインをしていなければ
+if(!isset($_SESSION['49_LearnSNS']['id'])){
+    //signin.phpへの遷移処理
+    header('Location: signin.php');
+    exit();
+}
+
+
 $sql = 'SELECT * FROM `users` WHERE `id` = ?';
 $data = [$_SESSION['49_LearnSNS']['id']];
 
@@ -19,6 +27,25 @@ $signin_user = $stmt->fetch(PDO::FETCH_ASSOC);
 echo '<pre>';
 var_dump($signin_user);
 echo '</pre>';
+
+//エラー内容を入れておく配列定義
+$errors = [];
+
+//投稿ボタンが押されたら
+//=POST送信だったら
+if (!empty($_POST)){
+    //textareaの値を取り出し
+    //$_POSTのキーはtextareaタグのname属性を使う
+    $feed = $_POST['feed'];
+    //投稿が空じゃない場合（!=）
+    if($feed != ''){
+    //投稿が空の場合
+    }else{
+    //エラーを出力する
+    //feedが空であるというエラーを入れておく
+        $errors['feed'] = 'blank';
+    }
+}
 
 ?>
 <!--
@@ -54,9 +81,18 @@ echo '</pre>';
             </div>
             <div class="col-xs-9">
                 <div class="feed_form thumbnail">
+                </div>
+                <!-- actionが空の場合は自分自身にアクセス-->
                     <form method="POST" action="">
                         <div class="form-group">
+                            <!--
+                            textareaは複数行のテキスト
+                            input type="text"は一行のテキスト
+                            -->
                             <textarea name="feed" class="form-control" rows="3" placeholder="Happy Hacking!" style="font-size: 24px;"></textarea><br>
+                            <?php if(isset($errors['feed']) && $errors['feed'] == 'blank'): ?>
+                            <p class="text-danger">なんかかいてね</p>
+                            <?php endif; ?>
                         </div>
                         <input type="submit" value="投稿する" class="btn btn-primary">
                     </form>

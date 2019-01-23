@@ -26,6 +26,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img src="user_profile_img/<?php echo htmlspecialchars($signin_user['img_name']);?>" width="18" class="img-circle"><?php echo $signin_user['name']; ?><span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="profile.php">マイページ</a></li>
+                            <!-- 下記で、signout.phpに飛ばしている-->
                             <li><a href="signout.php">サインアウト</a></li>
                         </ul>
                     </li>
