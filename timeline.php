@@ -24,6 +24,7 @@ $stmt->execute($data);
 // インスタンスのメンバメソッドを呼び出す
 $signin_user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+
 echo '<pre>';
 var_dump($signin_user);
 echo '</pre>';
@@ -39,8 +40,24 @@ if (!empty($_POST)){
     $feed = $_POST['feed'];
     //投稿が空じゃない場合（!=）
     if($feed != ''){
-    //投稿が空の場合
-    }else{
+    //投稿が空じゃない場合は
+    //投稿処理
+
+    //下記4行について
+    //1.SQLのINSERTになにを入れるかを定義
+    //2.?の中になにを定義するか
+    //3.dbh（データベースの仲介人）に準備
+    //4.さらに準備
+
+    $sql = 'INSERT INTO `feeds`(`feed`,`user_ID`,`created`)VALUES(?,?,NOW())';
+    $data = [$feed,$signin_user['id']];
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+
+    //投稿しっぱなしになるのを防ぐため
+    header('Location:timeline.php');
+    exit();
+
     //エラーを出力する
     //feedが空であるというエラーを入れておく
         $errors['feed'] = 'blank';
