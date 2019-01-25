@@ -25,10 +25,6 @@ $stmt->execute($data);
 $signin_user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 
-echo '<pre>';
-var_dump($signin_user);
-echo '</pre>';
-
 //エラー内容を入れておく配列定義
 $errors = [];
 
@@ -57,12 +53,36 @@ if (!empty($_POST)){
     //投稿しっぱなしになるのを防ぐため
     header('Location:timeline.php');
     exit();
-
+    }else{
     //エラーを出力する
     //feedが空であるというエラーを入れておく
-        $errors['feed'] = 'blank';
+    $errors['feed'] = 'blank';
     }
 }
+
+//投稿情報をすべて取得する
+$sql = '
+    SELECT `f`.*,`u`.`name`,`u`.`img_name`
+    FROM`feeds`AS`f`
+    LEFT JOIN`users`AS`u`
+    ON`f`.`user_id`=`u`.`id`
+    ORDER BY `f`.`created` DESC';
+$stmt = $dbh->prepare($sql);
+$stmt->execute();
+
+//投稿情報を入れておく配列の定義
+$feeds = [];
+while(true){
+    $record = $stmt->fetch(PDO::FETCH_ASSOC);
+    if($record == false){
+        break;
+    }
+    $feeds = $record;
+}
+
+echo '<pre>';
+var_dump($feeds);
+echo '</pre>';
 
 ?>
 <!--
@@ -98,7 +118,7 @@ if (!empty($_POST)){
             </div>
             <div class="col-xs-9">
                 <div class="feed_form thumbnail">
-                </div>
+
                 <!-- actionが空の場合は自分自身にアクセス-->
                     <form method="POST" action="">
                         <div class="form-group">
@@ -111,9 +131,13 @@ if (!empty($_POST)){
                             <p class="text-danger">なんかかいてね</p>
                             <?php endif; ?>
                         </div>
+
+
                         <input type="submit" value="投稿する" class="btn btn-primary">
                     </form>
                 </div>
+
+
                 <div class="thumbnail">
                     <div class="row">
                         <div class="col-xs-1">
@@ -142,6 +166,9 @@ if (!empty($_POST)){
                         <?php include('comment_view.php'); ?>
                     </div>
                 </div>
+
+
+
                 <div aria-label="Page navigation">
                     <ul class="pager">
                         <li class="previous disabled"><a><span aria-hidden="true">&larr;</span> Newer</a></li>
