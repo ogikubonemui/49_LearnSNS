@@ -22,6 +22,7 @@ $stmt->execute($data);
 
 // ->アロー演算子
 // インスタンスのメンバメソッドを呼び出す
+
 $signin_user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 
@@ -51,6 +52,7 @@ if (!empty($_POST)){
     $stmt->execute($data);
 
     //投稿しっぱなしになるのを防ぐため
+    //headerはGET送信
     header('Location:timeline.php');
     exit();
     }else{
@@ -61,6 +63,8 @@ if (!empty($_POST)){
 }
 
 //投稿情報をすべて取得する
+//ASはニックネームをつけることができる 略することができる
+//ONはなにとなにを比べるか
 $sql = '
     SELECT `f`.*,`u`.`name`,`u`.`img_name`
     FROM`feeds`AS`f`
@@ -77,12 +81,20 @@ while(true){
     if($record == false){
         break;
     }
+    //[]をつけることで一行ずつ追加していく、ということになる
+    //各投稿がいいね済かどうか
+    $like_flg_sql = 'SELECT * FROM `likes` WHERE `user_id` = ? AND `feed_id` = ?';
+    $like_flg_data = [$signin_user['id'],$record['id']];
+    $like_flg_stmt = $dbh->prepare($like_flg_sql);
+    $like_flg_stmt->execute($like_flg_data);
+    $is_liked = $like_flg_stmt->fetch(PDO::FETCH_ASSOC);
+
+    //三項演算子
+    //条件 ? 真の時の値 : 偽の時の値
+    $record['is_liked'] = $is_liked ? true: false;
+
     $feeds[] = $record;
 }
-
-echo '<pre>';
-var_dump($feeds);
-echo '</pre>';
 
 ?>
 <!--
@@ -108,6 +120,8 @@ echo '</pre>';
 <?php include('layouts/header.php'); ?>
 <body style="margin-top: 60px; background: #E4E6EB;">
     <?php include('navbar.php'); ?>
+    <!-- 誰がサインインしているかを出力-->
+    <span hidden class="signin-user"><?php echo $signin_user['id']; ?></span>
     <div class="container">
         <div class="row">
             <div class="col-xs-3">
@@ -159,7 +173,15 @@ echo '</pre>';
                     </div>
                     <div class="row feed_sub">
                         <div class="col-xs-12">
-                            <button class="btn btn-default">いいね！</button>
+                            <!-- どの投稿にいいねがされるか-->
+                            <span hidden class="feed-id"><?php echo $feed['id']; ?></span>
+
+
+                            <?php if($feed['is_liked']): ?>
+                            <button class="btn btn-default js-unlike"><span>いいねを取り消す</span></button>
+                            <?php else: ?>
+                            <button class="btn btn-default js-like"><span>いいね！</span></button>
+                            <?php endif; ?>
                             いいね数：
                             <span class="like-count">10</span>
                             <a href="#collapseComment" data-toggle="collapse" aria-expanded="false"><span>コメントする</span></a>
@@ -172,9 +194,9 @@ echo '</pre>';
                         <?php include('comment_view.php'); ?>
                     </div>
                 </div>
-
-
+                <!-- foreachはここまで-->
                 <?php endforeach; ?>
+
                 <div aria-label="Page navigation">
                     <ul class="pager">
                         <li class="previous disabled"><a><span aria-hidden="true">&larr;</span> Newer</a></li>

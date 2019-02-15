@@ -9,8 +9,11 @@ $data = [$_SESSION['49_LearnSNS']['id']];
 $stmt = $dbh->prepare($sql);
 $stmt->execute($data);
 
+//headerの名前と画像を呼び出している
 $signin_user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+if(isset($_GET['feed_id'])){
+//編集する投稿情報の取得
 $feed_id = $_GET['feed_id'];
 
 $sql = '
@@ -25,7 +28,7 @@ $stmt = $dbh->prepare($sql);
 $stmt->execute($data);
 
 $feed = $stmt->fetch(PDO::FETCH_ASSOC);
-
+}
 
 //更新ボタンが押されたあとの処理
 if(!empty($_POST)){

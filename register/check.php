@@ -22,10 +22,12 @@ if(!empty($_POST)){
     echo 'POST送信されました';
     //ユーザー登録処理
     $sql = 'INSERT INTO `users` (`name`,`email`,`password`,`img_name`,`created`)VALUES(?,?,?,?,NOW())';
-
+    //タプル処理
+    //NOW（）は実行した日時を出力する関数
     //password_hash
     //文字列を単純に保管するのは危険
     //ハッシュ化という文字列の暗号化をおこなう
+    // -> アロー演算子と
     $data = [$name,$email,password_hash($password,PASSWORD_DEFAULT),$img_name];
     $stmt = $dbh->prepare($sql);
     $stmt->execute($data);

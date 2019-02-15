@@ -80,6 +80,8 @@ if (!empty($_POST)){
         $errors['img_name'] = 'blank';
     }
 
+
+
     //エラーがなかった場合、
     if(empty($errors)){
         //ファイルアップロードの処理

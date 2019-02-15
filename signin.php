@@ -32,6 +32,7 @@ if(!empty($_POST)){
         //2.パスワード照合
         //password_verify(文字列,ハッシュ化=暗号化された文字列)
         //指定したふたつの文字列が合致する場合true
+        //$password と $record['password']は == かどうかを確認している
         if(password_verify($password,$record['password'])){
             //認証成功
             //3.セッションにユーザーのIDを格納
