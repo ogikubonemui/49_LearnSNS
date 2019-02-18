@@ -93,6 +93,19 @@ while(true){
     //条件 ? 真の時の値 : 偽の時の値
     $record['is_liked'] = $is_liked ? true: false;
 
+    //投稿に対して何件いいねをされているか
+    //COUNT（カラム）件数を取得
+    //*は何かしら値があれば、の意味
+    //SQLの関数
+    $like_sql = 'SELECT COUNT(*) AS `like_cnt`
+                FROM `likes`
+                WHERE `feed_id` = ?';
+    $like_data = [$record['id']];
+    $like_stmt = $dbh->prepare($like_sql);
+    $like_stmt->execute($like_data);
+    $like = $like_stmt->fetch(PDO::FETCH_ASSOC);
+    $record['like_cnt'] = $like['like_cnt'];
+
     $feeds[] = $record;
 }
 
@@ -183,7 +196,7 @@ while(true){
                             <button class="btn btn-default js-like"><span>いいね！</span></button>
                             <?php endif; ?>
                             いいね数：
-                            <span class="like-count">10</span>
+                            <span class="like-count"><?php echo $feed['like_cnt']; ?></span>
                             <a href="#collapseComment" data-toggle="collapse" aria-expanded="false"><span>コメントする</span></a>
                             <span class="comment-count">コメント数：5</span>
                             <?php if($feed['user_id'] == $signin_user['id']): ?>
